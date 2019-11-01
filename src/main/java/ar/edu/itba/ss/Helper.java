@@ -25,15 +25,11 @@ public class Helper {
 
     // Si no se tocan, entonces avanza siempre en dirección de X, por eso la velocidad en Y es 0
     public static Vector getVelocityNoOverlap(final Particle particle) {
-        return getVelocityNoOverlap(particle.getR(), particle.getMinR(), particle.getMaxR());
+        return getVelocityNoOverlap(particle.getR(), SystemConfiguration.MIN_R, SystemConfiguration.MAX_R);
     }
 
     static Vector getVelocityNoOverlap(final double r, final double minR, final double maxR) {
-        double x = Math.abs(SystemConfiguration.MAX_V * Math.pow((r - minR) / (maxR - r), SystemConfiguration.BETA));
-        System.out.println(r);
-        System.out.println(minR);
-        System.out.println(maxR);
-        System.out.println();
+        double x = SystemConfiguration.MAX_V * Math.pow((r - minR) / (maxR - minR), SystemConfiguration.BETA);
         return new Vector(x, 0);
     }
 
@@ -44,6 +40,22 @@ public class Helper {
             }
         }
 
+        if (newPosition.y + newR >= SystemConfiguration.W) {
+            return true;
+        }
+
+        if (newPosition.y - newR <= 0) {
+            return true;
+        }
+
         return false;
+    }
+
+    static boolean upperWallOverlapping(final Particle particle) {
+        return particle.getPosition().y + particle.getR() >= SystemConfiguration.W;
+    }
+
+    static boolean bottomWallOverlapping(final Particle particle) {
+        return particle.getPosition().y - particle.getR() <= 0;
     }
 }
