@@ -1,5 +1,7 @@
 package ar.edu.itba.ss.model;
 
+import ar.edu.itba.ss.SystemConfiguration;
+
 import java.util.Objects;
 
 public class Particle {
@@ -20,10 +22,6 @@ public class Particle {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
     }
 
     public Vector getPosition() {
@@ -56,6 +54,35 @@ public class Particle {
 
     public void setOverlapping(final boolean overlapping) {
         this.overlapping = overlapping;
+    }
+
+    public boolean isOverlapping(final Particle particle) {
+        return this.getPosition().distanceTo(particle.getPosition()) < this.getR() + particle.getR();
+    }
+
+    public boolean upperWallOverlapping() {
+        return this.getPosition().y + this.getR() >= SystemConfiguration.W;
+    }
+
+    public boolean bottomWallOverlapping() {
+        return this.getPosition().y - this.getR() <= 0;
+    }
+
+    /**
+     * Returns the velocity for a particle that's not overlapping another.
+     * In this case, the `y` coordinate is always `0` as the particle just moves towards the exit point
+     * which is located at the right of the corridor.
+     *
+     * @param radius
+     *
+     * @return Velocity assuming no overlap with other particles
+     */
+    public static Vector getVelocityNoOverlap(double radius) {
+        double minR = SystemConfiguration.MIN_R;
+        double maxR = SystemConfiguration.MAX_R;
+        double x = SystemConfiguration.MAX_V * Math.pow((radius - minR) / (maxR - minR), SystemConfiguration.BETA);
+
+        return new Vector(x, 0);
     }
 
     public String xyzPrint() {

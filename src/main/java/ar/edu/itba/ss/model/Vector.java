@@ -9,10 +9,6 @@ public class Vector {
         this.y = y;
     }
 
-    public String toString() {
-        return "(" + x + ", " + y + ")";
-    }
-
     public Vector normalize() {
         if (x == 0 && y == 0) {
             return new Vector(0, 0);
@@ -33,7 +29,7 @@ public class Vector {
         return new Vector(x + v.x, y + v.y);
     }
 
-    public Vector calculatePerpendicularVersor(final Vector v) {
+    public Vector calculatePerpendicularUnitVector(final Vector v) {
         return v.minusVector(this).normalize();
     }
 
@@ -45,7 +41,7 @@ public class Vector {
         return this.minusVector(v).norm();
     }
 
-    public Vector clone() {
-        return new Vector(x, y);
+    public String toString() {
+        return "(" + x + ", " + y + ")";
     }
 }

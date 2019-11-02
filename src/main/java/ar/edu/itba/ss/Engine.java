@@ -3,56 +3,45 @@ package ar.edu.itba.ss;
 import ar.edu.itba.ss.model.Particle;
 import ar.edu.itba.ss.model.Vector;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+
+import static ar.edu.itba.ss.SystemConfiguration.*;
 
 public class Engine {
-
-    private double L = SystemConfiguration.L;
-    private double W = SystemConfiguration.W;
-    private double totalTime = SystemConfiguration.TOTAL_TIME;
-    private double time = 0;
-    private Writer xyzWriter = new Writer(SystemConfiguration.XYZ_WRITER_PATH);
-
-    private Set<Particle> particles;
-
-    public Engine() {
-
-        particles = initializeParticles(SystemConfiguration.PARTICLES_QUANTITY, SystemConfiguration.MIN_R,
-                SystemConfiguration.MAX_R);
+    public static void runSimulation() {
+        double time = 0;
+        Set<Particle> particles = initializeParticles();
 
         System.out.println("Particles initialized");
 
-        printToXYZ();
+        Writer.writeParticles(particles);
 
         double auxTime = 0;
 
-        while (time < totalTime) {
+        while (time < TOTAL_TIME) {
 
-            findContactsAndCalculateVe();
-            adjustAllRadius();
-            computeVd();
-            calculateNewPositions();
-            clearParticles();
+            findContactsAndCalculateVe(particles);
+            adjustAllRadius(particles);
+            computeVd(particles);
+            calculateNewPositions(particles);
+            clearParticles(particles);
 
             time += SystemConfiguration.DELTA_T;
             auxTime += SystemConfiguration.DELTA_T;
 
             if (auxTime >= SystemConfiguration.DELTA_T2) {
-                printToXYZ();
+                Writer.writeParticles(particles);
                 auxTime -= SystemConfiguration.DELTA_T2;
             }
         }
     }
 
-    private Set<Particle> initializeParticles(final int quantity, final double minR, final double maxR) {
-
+    private static Set<Particle> initializeParticles() {
         Set<Particle> newParticles = new HashSet<>();
         Random random = Helper.getRandom();
 
-        for (int i = 0; i < quantity; i++) {
-            double r = random.nextDouble() * (maxR - minR) + minR;
+        for (int i = 0; i < PARTICLES_QUANTITY; i++) {
+            double r = random.nextDouble() * (MAX_R - MIN_R) + MIN_R;
             double x;
             double y;
             Vector position;
@@ -63,53 +52,35 @@ public class Engine {
                 position = new Vector(x, y);
             } while (Helper.verifyOverlap(newParticles, position, r));
 
-            newParticles.add(new Particle(i, position, Helper.getVelocityNoOverlap(r, minR, maxR), r));
+            newParticles.add(new Particle(i, position, Particle.getVelocityNoOverlap(r), r));
         }
 
         return newParticles;
     }
 
-    private void printToXYZ() {
-        xyzWriter.writeString(particles.size() + 4 + "\n\n");
-
-        for (Particle each : particles) {
-            xyzWriter.writeString(each.xyzPrint() + "\n");
-        }
-
-        Particle particle1 = new Particle(-1, new Vector(0, 0), new Vector(0, 0), 0.00001);
-        Particle particle2 = new Particle(-1, new Vector(SystemConfiguration.L, 0), new Vector(0, 0), 0.00001);
-        Particle particle3 = new Particle(-1, new Vector(0, SystemConfiguration.W), new Vector(0, 0), 0.00001);
-        Particle particle4 = new Particle(-1, new Vector(SystemConfiguration.L, SystemConfiguration.W), new Vector(0, 0), 0.00001);
-
-        xyzWriter.writeString(particle1.xyzPrint() + "\n");
-        xyzWriter.writeString(particle2.xyzPrint() + "\n");
-        xyzWriter.writeString(particle3.xyzPrint() + "\n");
-        xyzWriter.writeString(particle4.xyzPrint() + "\n");
-    }
-
-    private void findContactsAndCalculateVe() {
+    private static void findContactsAndCalculateVe(Set<Particle> particles) {
         for (Particle p1 : particles) {
 
             Vector escapeVector = new Vector(0, 0);
             boolean overlapping = false;
 
-            // Ecuation number 6
+            // Equation number 6
             for (Particle p2 : particles) {
-                if (!p1.equals(p2) && Helper.isOverlapping(p1, p2)) {
-                    escapeVector = escapeVector.plusVector(p2.getPosition().calculatePerpendicularVersor(p1.getPosition()));
+                if (!p1.equals(p2) && p1.isOverlapping(p2)) {
+                    escapeVector = escapeVector.plusVector(p2.getPosition().calculatePerpendicularUnitVector(p1.getPosition()));
                     overlapping = true;
                 }
             }
 
             // Upper wall
-            if (Helper.upperWallOverlapping(p1)) {
-                escapeVector = escapeVector.plusVector(new Vector(p1.getPosition().x, W).calculatePerpendicularVersor(p1.getPosition()));
+            if (p1.upperWallOverlapping()) {
+                escapeVector = escapeVector.plusVector(new Vector(p1.getPosition().x, W).calculatePerpendicularUnitVector(p1.getPosition()));
                 overlapping = true;
             }
 
             // Bottom wall
-            if (Helper.bottomWallOverlapping(p1)) {
-                escapeVector = escapeVector.plusVector(new Vector(p1.getPosition().x, 0).calculatePerpendicularVersor(p1.getPosition()));
+            if (p1.bottomWallOverlapping()) {
+                escapeVector = escapeVector.plusVector(new Vector(p1.getPosition().x, 0).calculatePerpendicularUnitVector(p1.getPosition()));
                 overlapping = true;
             }
 
@@ -122,7 +93,7 @@ public class Engine {
         }
     }
 
-    private void adjustAllRadius() {
+    private static void adjustAllRadius(Set<Particle> particles) {
         for (Particle particle : particles) {
             if (particle.isOverlapping()) {
                 particle.setR(SystemConfiguration.MIN_R);
@@ -133,15 +104,15 @@ public class Engine {
         }
     }
 
-    private void computeVd() {
+    private static void computeVd(Set<Particle> particles) {
         for (Particle particle : particles) {
             if (!particle.isOverlapping()) {
-                particle.setVelocity(Helper.getVelocityNoOverlap(particle));
+                particle.setVelocity(Particle.getVelocityNoOverlap(particle.getR()));
             }
         }
     }
 
-    private void calculateNewPositions() {
+    private static void calculateNewPositions(Set<Particle> particles) {
         for (Particle particle : particles) {
             Vector newPosition = particle.getPosition().plusVector(particle.getVelocity().timesScalar(SystemConfiguration.DELTA_T));
 
@@ -157,7 +128,7 @@ public class Engine {
         }
     }
 
-    private void clearParticles() {
+    private static void clearParticles(Set<Particle> particles) {
         for (Particle particle : particles) {
             particle.setOverlapping(false);
         }
