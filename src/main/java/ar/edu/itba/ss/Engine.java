@@ -92,16 +92,22 @@ public class Engine {
             // Upper wall
             if (p1.upperWallOverlapping()) {
                 Vector upperWallVirtualPosition = new Vector(p1.getPosition().x, width);
+                Vector wallEscapeVector1 = upperWallVirtualPosition.calculatePerpendicularUnitVector(p1.getPosition());
 
-                escapeVector = escapeVector.plusVector(upperWallVirtualPosition.calculatePerpendicularUnitVector(p1.getPosition()));
+                Vector wallEscapeVector = new Vector(wallEscapeVector1.x, -Math.abs(wallEscapeVector1.y));
+
+                escapeVector = escapeVector.plusVector(wallEscapeVector);
                 overlapping = true;
             }
 
             // Bottom wall
             if (p1.bottomWallOverlapping()) {
                 Vector bottomWallVirtualPosition = new Vector(p1.getPosition().x, 0);
+                Vector wallEscapeVector1 = bottomWallVirtualPosition.calculatePerpendicularUnitVector(p1.getPosition());
 
-                escapeVector = escapeVector.plusVector(bottomWallVirtualPosition.calculatePerpendicularUnitVector(p1.getPosition()));
+                Vector wallEscapeVector = new Vector(wallEscapeVector1.x, Math.abs(wallEscapeVector1.y));
+
+                escapeVector = escapeVector.plusVector(wallEscapeVector);
                 overlapping = true;
             }
 
