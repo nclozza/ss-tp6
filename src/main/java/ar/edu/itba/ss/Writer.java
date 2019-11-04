@@ -1,8 +1,8 @@
 package ar.edu.itba.ss;
 
+import ar.edu.itba.ss.model.Pair;
 import ar.edu.itba.ss.model.Particle;
 import ar.edu.itba.ss.model.Vector;
-import com.sun.tools.javac.util.Pair;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import static ar.edu.itba.ss.SystemConfiguration.L;
+import static ar.edu.itba.ss.SystemConfiguration.W;
 
 public class Writer {
     private static PrintWriter writer;
@@ -84,9 +85,9 @@ public class Writer {
         double wallParticleCount = SystemConfiguration.debugManyWallParticles ? 200 : 2;
         double wallParticleRadius = SystemConfiguration.MIN_R / 3;
 
-        for (double x = 0; x < L; x += L / wallParticleCount) {
+        for (double x = 0; x <= L; x += L / wallParticleCount) {
             Particle topWallParticle = new Particle(-1, new Vector(x, 0), new Vector(0, 0), wallParticleRadius);
-            Particle bottomWallParticle = new Particle(-1, new Vector(x, SystemConfiguration.W), new Vector(0, 0), wallParticleRadius);
+            Particle bottomWallParticle = new Particle(-1, new Vector(x, W), new Vector(0, 0), wallParticleRadius);
 
             wallParticles.add(topWallParticle);
             wallParticles.add(bottomWallParticle);
@@ -94,6 +95,4 @@ public class Writer {
 
         return wallParticles;
     }
-
-
 }

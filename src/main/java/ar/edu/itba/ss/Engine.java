@@ -1,8 +1,8 @@
 package ar.edu.itba.ss;
 
+import ar.edu.itba.ss.model.Pair;
 import ar.edu.itba.ss.model.Particle;
 import ar.edu.itba.ss.model.Vector;
-import com.sun.tools.javac.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;

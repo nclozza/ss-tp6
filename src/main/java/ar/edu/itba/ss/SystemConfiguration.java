@@ -43,6 +43,6 @@ public class SystemConfiguration {
 
     // DEBUG
     public static final boolean debugPrintXYZ = true;
-    public static final boolean debugManyWallParticles = true;
+    public static final boolean debugManyWallParticles = false;
     public static final boolean debugLogEverything = true;
 }
