@@ -30,10 +30,12 @@ public class Writer {
     }
 
     private static PrintWriter fundamentalDataWriter;
+    private static PrintWriter averageVelocityWriter;
 
     static {
         try {
             fundamentalDataWriter = new PrintWriter("fundamentalData.csv", "UTF-8");
+            averageVelocityWriter = new PrintWriter("averageVelocity.csv", "UTF-8");
 //            fundamentalDataWriter.write("Density,Average Velocity\n");
 //            fundamentalDataWriter.flush();
         } catch (FileNotFoundException e) {
@@ -68,6 +70,11 @@ public class Writer {
     public static void printFundamentalData(Pair<Double, Double> fundamentalData) {
         fundamentalDataWriter.write(formatter.format(fundamentalData.fst) + "," + formatter.format(fundamentalData.snd) + "\n");
         fundamentalDataWriter.flush();
+    }
+
+    public static void printAverageVelocity(final double time, final double averageVelocity) {
+        averageVelocityWriter.write(formatter.format(time) + "," + formatter.format(averageVelocity) + "\n");
+        averageVelocityWriter.flush();
     }
 
     private static void writeString(final String string) {

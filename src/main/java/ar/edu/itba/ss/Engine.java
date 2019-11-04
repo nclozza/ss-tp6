@@ -37,6 +37,7 @@ public class Engine {
 
             if (auxTime >= SystemConfiguration.DELTA_T2) {
                 Writer.writeParticles(particles);
+                Writer.printAverageVelocity(time, fundamentalData(particles, length, width).snd);
                 auxTime -= SystemConfiguration.DELTA_T2;
                 Logger.debug("Printing at time: " + time + "s");
             }
@@ -67,7 +68,7 @@ public class Engine {
                 x = random.nextDouble() * (maxX - minX) + minX;
                 y = random.nextDouble() * (maxY - minY) + minY;
                 position = new Vector(x, y);
-            } while (false); // while (Helper.verifyOverlap(newParticles, position, r));
+            } while (Helper.verifyOverlap(newParticles, position, r));
 
             newParticles.add(new Particle(i, position, Particle.getVelocityNoOverlap(r), r));
         }

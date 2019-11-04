@@ -23,7 +23,7 @@ public class SystemConfiguration {
     // [W] = m
     public static final double W = 5 * (MAX_R + MIN_R);
 
-    public static final int PARTICLES_QUANTITY = 400;
+    public static final int PARTICLES_QUANTITY = 300;
 
     // [DELTA_T] = s
 //    public static final double DELTA_T = MIN_R / 2 * MAX_V;
@@ -42,7 +42,7 @@ public class SystemConfiguration {
     public static final String XYZ_WRITER_PATH = "output.xyz";
 
     // DEBUG
-    public static final boolean debugPrintXYZ = true;
+    public static final boolean debugPrintXYZ = false;
     public static final boolean debugManyWallParticles = false;
-    public static final boolean debugLogEverything = true;
+    public static final boolean debugLogEverything = false;
 }

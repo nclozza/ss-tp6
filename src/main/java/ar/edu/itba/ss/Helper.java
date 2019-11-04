@@ -6,6 +6,8 @@ import ar.edu.itba.ss.model.Vector;
 import java.util.Random;
 import java.util.Set;
 
+import static ar.edu.itba.ss.SystemConfiguration.MIN_R;
+
 public class Helper {
     private static Random random;
     private static final long seed = System.currentTimeMillis();
@@ -20,7 +22,7 @@ public class Helper {
 
     static boolean verifyOverlap(final Set<Particle> newParticles, final Vector newPosition, final double newR) {
         for (Particle each : newParticles) {
-            if (each.getPosition().distanceTo(newPosition) < each.getR() + newR) {
+            if (each.getPosition().distanceTo(newPosition) < MIN_R * 2) {
                 return true;
             }
         }
