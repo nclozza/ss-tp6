@@ -83,7 +83,7 @@ public class Writer {
         wallParticles = new ArrayList<>();
 
         double wallParticleCount = SystemConfiguration.debugManyWallParticles ? 200 : 2;
-        double wallParticleRadius = SystemConfiguration.MIN_R / 3;
+        double wallParticleRadius = SystemConfiguration.MIN_R / 30;
 
         for (double x = 0; x <= L; x += L / wallParticleCount) {
             Particle topWallParticle = new Particle(-1, new Vector(x, 0), new Vector(0, 0), wallParticleRadius);
